@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AlfCasino Bonus Tool – Orangebonus</title>
+  <meta name="description" content="Bonus Hunt Tool für Orangebonus – A-Z Hunt, Bingo, Wheel, Themed Sessions & Community Hunt">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            orange: { DEFAULT: '#ff6b00', glow: '#ff8c33', dark: '#cc5500' },
+            dark: { DEFAULT: '#0f1117', card: '#1a1d27', border: '#2d3348' }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="min-h-screen">
+
+  <!-- Header -->
+  <header class="border-b border-dark-border bg-dark-card/80 backdrop-blur-sm sticky top-0 z-50">
+    <div class="max-w-[1920px] mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange to-orange-dark flex items-center justify-center font-extrabold text-white text-lg">O</div>
+        <div>
+          <h1 class="text-xl sm:text-2xl font-extrabold header-glow text-orange">AlfCasino Bonus Tool</h1>
+          <p class="text-sm text-gray-400">by <span class="text-orange-glow font-semibold">Orangebonus</span></p>
+        </div>
+      </div>
+      <div class="text-sm text-gray-400">
+        <span id="slot-count" class="text-orange-glow font-semibold">–</span> Bonus-Slots geladen
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="border-b border-dark-border bg-dark-card/50 sticky top-[73px] z-40">
+    <div class="max-w-[1920px] mx-auto px-2 overflow-x-auto">
+      <div class="flex min-w-max" id="nav-tabs">
+        <button class="nav-tab active px-4 py-3 text-sm font-semibold whitespace-nowrap" data-section="az-hunt">A-Z Bonus Hunt</button>
+        <button class="nav-tab px-4 py-3 text-sm font-semibold whitespace-nowrap" data-section="free-spins">Free Spins Liste</button>
+        <button class="nav-tab px-4 py-3 text-sm font-semibold whitespace-nowrap" data-section="bingo">Bingo 5×5</button>
+        <button class="nav-tab px-4 py-3 text-sm font-semibold whitespace-nowrap" data-section="wheel">Bonus Wheel</button>
+        <button class="nav-tab px-4 py-3 text-sm font-semibold whitespace-nowrap" data-section="themed">Themed Sessions</button>
+        <button class="nav-tab px-4 py-3 text-sm font-semibold whitespace-nowrap" data-section="community">Community Hunt</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-[1920px] mx-auto px-4 py-6">
+
+    <!-- 1. A-Z Bonus Hunt -->
+    <section id="az-hunt" class="section-panel active">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <h2 class="text-2xl font-bold text-white">A-Z Bonus Hunt</h2>
+          <p class="text-gray-400 text-sm mt-1">Ein zufälliger Bonus-Slot pro Buchstabe – perfekt für den Stream!</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+          <span class="seed-badge" id="az-seed-display">Seed: –</span>
+          <button class="btn-primary" id="btn-generate-az">Neuen A-Z Hunt generieren</button>
+        </div>
+      </div>
+      <div class="az-grid flex gap-1" id="az-grid"></div>
+    </section>
+
+    <!-- 2. Free Spins Liste -->
+    <section id="free-spins" class="section-panel">
+      <div class="mb-6">
+        <h2 class="text-2xl font-bold text-white">Free Spins Liste</h2>
+        <p class="text-gray-400 text-sm mt-1">Alle Slots mit Bonus/Free Spins – filterbar nach Provider.</p>
+      </div>
+      <div class="flex flex-col sm:flex-row gap-3 mb-4">
+        <input type="text" id="search-slots" class="input-field flex-1" placeholder="Slot suchen…">
+        <select id="filter-provider" class="select-field sm:w-64">
+          <option value="">Alle Provider</option>
+        </select>
+      </div>
+      <div class="overflow-auto max-h-[70vh] rounded-lg border border-dark-border">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Slot Name</th>
+              <th>Provider</th>
+              <th>Bonus Beschreibung</th>
+            </tr>
+          </thead>
+          <tbody id="free-spins-tbody"></tbody>
+        </table>
+      </div>
+      <p class="text-gray-500 text-sm mt-2" id="free-spins-count"></p>
+    </section>
+
+    <!-- 3. Bingo 5x5 -->
+    <section id="bingo" class="section-panel">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <h2 class="text-2xl font-bold text-white">Bingo 5×5</h2>
+          <p class="text-gray-400 text-sm mt-1">Klicke Felder an um sie als gespielt zu markieren (grün).</p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <button class="btn-primary" id="btn-roll-bingo">Slots neu rollen</button>
+          <button class="btn-secondary" id="btn-reset-bingo">Alle Farben zurücksetzen</button>
+        </div>
+      </div>
+      <div class="grid grid-cols-5 gap-2 max-w-2xl mx-auto" id="bingo-grid"></div>
+    </section>
+
+    <!-- 4. Bonus Wheel -->
+    <section id="wheel" class="section-panel">
+      <div class="text-center mb-6">
+        <h2 class="text-2xl font-bold text-white">Bonus Wheel</h2>
+        <p class="text-gray-400 text-sm mt-1">Drehe das Glücksrad und lass den Zufall entscheiden!</p>
+      </div>
+      <div class="wheel-container">
+        <div class="relative">
+          <div class="wheel-pointer"></div>
+          <canvas id="wheel-canvas" width="420" height="420"></canvas>
+        </div>
+        <div class="flex gap-3">
+          <button class="btn-primary" id="btn-spin-wheel">Wheel drehen</button>
+          <button class="btn-secondary hidden" id="btn-spin-again">Nochmal drehen</button>
+        </div>
+        <div class="wheel-result hidden" id="wheel-result">
+          <p class="text-gray-400 text-sm mb-1">Gewinner</p>
+          <h3 class="text-2xl font-bold text-orange-glow" id="wheel-result-name">–</h3>
+          <p class="text-gray-300 mt-2" id="wheel-result-provider">–</p>
+          <p class="text-gray-400 text-sm mt-1" id="wheel-result-bonus">–</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Themed Sessions -->
+    <section id="themed" class="section-panel">
+      <div class="mb-6">
+        <h2 class="text-2xl font-bold text-white">Themed Sessions</h2>
+        <p class="text-gray-400 text-sm mt-1">Wähle ein Theme und erhalte passende Bonus-Slots.</p>
+      </div>
+      <div class="flex flex-wrap gap-2 mb-6" id="theme-buttons"></div>
+      <div class="flex items-center gap-3 mb-4">
+        <button class="btn-primary" id="btn-random-theme">Zufällige 10 auswählen</button>
+        <span class="text-gray-400 text-sm" id="theme-label">Kein Theme ausgewählt</span>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="theme-slots-grid"></div>
+    </section>
+
+    <!-- 6. Community Hunt -->
+    <section id="community" class="section-panel">
+      <div class="mb-6">
+        <h2 class="text-2xl font-bold text-white">Community Hunt (Twitch)</h2>
+        <p class="text-gray-400 text-sm mt-1">
+          Chat-Eingaben im Format <code class="text-orange-glow bg-dark px-1 rounded">!Bonushunt Slotname</code> manuell einfügen.
+        </p>
+      </div>
+
+      <div class="bg-dark-card border border-dark-border rounded-lg p-4 mb-4 text-sm text-gray-400">
+        <strong class="text-orange-glow">Hinweis:</strong> Eine reine statische Website kann keinen echten Twitch-Chat lesen.
+        Nutze manuelle Eingabe, ein Browser-Userscript oder StreamElements/Bot-Integration, um Chat-Nachrichten hier einzufügen.
+        Duplikate desselben Slots werden innerhalb von 30 Minuten blockiert.
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-3 mb-4">
+        <input type="text" id="community-input" class="input-field flex-1" placeholder="!Bonushunt Gates of Olympus">
+        <button class="btn-primary" id="btn-add-community">Manuell hinzufügen</button>
+      </div>
+
+      <div class="flex flex-wrap gap-3 mb-4">
+        <button class="btn-secondary" id="btn-delete-last">Letzten Eintrag löschen</button>
+        <button class="btn-secondary text-red-400 hover:text-red-300" id="btn-clear-community">Tabelle leeren</button>
+      </div>
+
+      <div class="overflow-auto max-h-[60vh] rounded-lg border border-dark-border">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Zeit</th>
+              <th>Username</th>
+              <th>Slot Name</th>
+              <th>Aktion</th>
+            </tr>
+          </thead>
+          <tbody id="community-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Slot Detail Modal -->
+  <div class="modal-overlay" id="slot-modal">
+    <div class="modal-content relative">
+      <button class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl leading-none" id="modal-close">&times;</button>
+      <h3 class="text-xl font-bold text-orange-glow mb-2" id="modal-name">–</h3>
+      <p class="text-gray-300 mb-1"><strong>Provider:</strong> <span id="modal-provider">–</span></p>
+      <p class="text-gray-400 mb-3"><strong>Bonus:</strong> <span id="modal-bonus">–</span></p>
+      <div class="flex flex-wrap gap-1" id="modal-themes"></div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
